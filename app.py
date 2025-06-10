@@ -9,22 +9,19 @@ from streamlit_extras.grid import grid
 
 
 def build_sidebar():
-    st.image("images/logo-250-100-transparente.png")
+    st.image("images/ProfilePic.png")
     ticker_list = pd.read_csv("list.csv", index_col=0)
     tickers = st.multiselect(label="Select cryptocurrency", options=ticker_list, placeholder='Tickers')
-    #tickers = [t+".SA" for t in tickers]
+
     start_date = st.date_input("From", format="DD/MM/YYYY", value=datetime(2024,1,2))
     end_date = st.date_input("Until", format="DD/MM/YYYY", value="today")
 
     if tickers:
         prices = yf.download(tickers, start=start_date, end=end_date)['Close']
-        #if len(tickers) == 1:
-        #    prices = prices.to_frame()
-        #
-        #     prices.columns = tickers[0]
+
                     
         prices.columns = prices.columns
-        #prices['IBOV'] = yf.download("^BVSP", start=start_date, end=end_date)["Adj Close"]
+
         return tickers, prices
     return None, None
 
@@ -40,14 +37,9 @@ def build_main(tickers, prices):
     for t in prices.columns:
         c = mygrid.container(border=True)
         c.subheader(t, divider="red")
-        #colA, colB, colC = c.columns(3)
+
         colA, colB = c.columns(2)
-        #if t == "portfolio":
-        #    colA.image("images/pie-chart-dollar-svgrepo-com.svg")
-        #elif t == "IBOV":
-        #    colA.image("images/pie-chart-svgrepo-com.svg")
-        #else:
-        #    colA.image(f'https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{t}.png', width=85)
+
         colA.metric(label="Return", value=f"{rets[t]:.0%}")
         colB.metric(label="Volatility", value=f"{vols[t]:.0%}")
         style_metric_cards(background_color='rgba(255,255,255,0)')
